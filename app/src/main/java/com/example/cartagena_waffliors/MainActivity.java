@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, CriarJogoActivity.class);
                 intent.putExtra("nomeJogador","Mario");
-                intent.putExtra("nomeJogo","teste10");
+                intent.putExtra("nomeJogo","testet");
                 intent.putExtra("senhaJogo", "abc123");
                 intent.putExtra("criar",true);
                 intent.putExtra("atividadeJogo","exemplo.pdm.senac.com.br.exemplousolobby.JogoActivity");
