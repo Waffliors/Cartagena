@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("nomeJogo", userName);
                 intent.putExtra("senhaJogo", sortNumber(3));
                 intent.putExtra("criar",true);
-                intent.putExtra("atividadeJogo","br.com.cartagena_waffliors.GameActivity");
+                intent.putExtra("atividadeJogo","com.example.cartagena_waffliors.GameActivity");
                 startActivity(intent);
             }
         });
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, EscolherJogoActivity.class);
                 intent.putExtra("nomeJogador",userName);
-                intent.putExtra("atividadeJogo","br.com.cartagena_waffliors.GameActivity");
+                intent.putExtra("atividadeJogo","com.example.cartagena_waffliors.GameActivity");
                 intent.putExtra("criar",false);
                 startActivity(intent);
             }
