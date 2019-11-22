@@ -1,5 +1,6 @@
 package com.example.cartagena_waffliors;
 
+import android.content.Intent;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import br.com.senac.pdm.mepresidenta.lobby.CriarJogoActivity;
 
 //Classe que coleta e filtra o nome do usuário para utilizar na aplicação
 public class PreMainActivity extends AppCompatActivity {
@@ -29,7 +32,12 @@ public class PreMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String userNameString = userName.getText().toString();
-                stringFilter(userNameString);
+                //Se String for aprovada no filtro
+                if(stringFilter(userNameString)){
+                    Intent intent = new Intent(PreMainActivity.this, MainActivity.class);
+                    intent.putExtra("userrName",userNameString);
+                    startActivity(intent);
+                }
             }
         });
     }
