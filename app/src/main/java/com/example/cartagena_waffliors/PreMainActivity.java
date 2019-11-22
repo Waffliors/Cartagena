@@ -35,7 +35,7 @@ public class PreMainActivity extends AppCompatActivity {
                 //Se String for aprovada no filtro
                 if(stringFilter(userNameString)){
                     Intent intent = new Intent(PreMainActivity.this, MainActivity.class);
-                    intent.putExtra("userrName",userNameString);
+                    intent.putExtra("userName",userNameString);
                     startActivity(intent);
                 }
             }
