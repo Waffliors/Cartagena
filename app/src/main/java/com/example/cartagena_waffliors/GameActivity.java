@@ -1,9 +1,15 @@
 package com.example.cartagena_waffliors;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -14,10 +20,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GameActivity extends AppCompatActivity {
 
+    ViewGroup containerJogadores;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        containerJogadores = (ViewGroup) findViewById(R.id.container_jogadores);
+
 
         System.out.println("Criou sala de jogo");
         SharedPreferences pref = getApplicationContext().getSharedPreferences("jogo", 0);
@@ -46,16 +57,28 @@ public class GameActivity extends AppCompatActivity {
                     Jogador[] retorno = response.body();
                     System.out.println("Lista de Jogadores: \n");
                     for(int i = 0; i < retorno.length; i++){
-                        System.out.println(retorno[i]);
+                        addPlayerToFragment(retorno[i].getNome(), retorno[i].getId().toString());
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<Jogador[]> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
             }
         });
 
+    }
+
+    public void addPlayerToFragment(String nomePlayer, String idPlayer){
+        CardView cardView = (CardView) LayoutInflater.from(this)
+                .inflate(R.layout.players_card, containerJogadores, false);
+
+        System.out.println("Adicionando jogador " + nomePlayer + " ao container de jogadores");
+        TextView nome = (TextView) cardView.findViewById(R.id.textView_nomeJogador_CardView);
+        TextView id = (TextView) cardView.findViewById(R.id.textViewIDJogador_CardView);
+        nome.setText("Nome do jogador: " + nomePlayer);
+        id.setText("ID do jogador: " + idPlayer);
+        containerJogadores.addView(cardView);
+        System.out.println("Adicionou jogador na lista");
     }
 }
