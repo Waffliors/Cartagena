@@ -2,12 +2,10 @@ package com.example.cartagena_waffliors;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,8 +74,8 @@ public class GameActivity extends AppCompatActivity {
         System.out.println("Adicionando jogador " + nomePlayer + " ao container de jogadores");
         TextView nome = (TextView) cardView.findViewById(R.id.textView_nomeJogador_CardView);
         TextView id = (TextView) cardView.findViewById(R.id.textViewIDJogador_CardView);
-        nome.setText("Nome do jogador: " + nomePlayer);
-        id.setText("ID do jogador: " + idPlayer);
+        nome.setText("Jogador: " + nomePlayer);
+        id.setText("ID : " + idPlayer);
         containerJogadores.addView(cardView);
         System.out.println("Adicionou jogador na lista");
     }
