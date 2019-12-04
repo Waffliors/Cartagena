@@ -26,8 +26,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        containerJogadores = (ViewGroup) findViewById(R.id.container_cards);
-        containerCards = (ViewGroup) findViewById(R.id.container_cards);
+        containerJogadores = (ViewGroup) findViewById(R.id.container_jogadores);
+        //containerCards = (ViewGroup) findViewById(R.id.container_cards);
 
 
         System.out.println("Criou sala de jogo");
