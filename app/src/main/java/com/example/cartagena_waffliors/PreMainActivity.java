@@ -23,6 +23,7 @@ public class PreMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_pre_main);
         //Bind dos elementos da activity
         userName = findViewById(R.id.userNameText);
