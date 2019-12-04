@@ -34,7 +34,7 @@ public class GameActivity extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("jogo", 0);
         String idJogador = pref.getString("idJogador","");
         String nomeJogador = pref.getString("nomeJogador","");
-        final String senhaJogador = pref.getString("senhaJogador","");
+        String senhaJogador = pref.getString("senhaJogador","");
         String idJogo = pref.getString("idJogo","");
         String nomeJogo = pref.getString("nomeJogo","");
         String senhaJogo = pref.getString("senhaJogo","");
@@ -44,7 +44,8 @@ public class GameActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        final MyService api = retrofit.create(MyService.class);
+        MyService api = retrofit.create(MyService.class);
+
         Call<Jogador[]> chamadaListaJogadores = api.pegarListaJogadores(idJogo);
         chamadaListaJogadores.enqueue(new Callback<Jogador[]>() {
             @Override
@@ -56,10 +57,7 @@ public class GameActivity extends AppCompatActivity {
                     Jogador[] retorno = response.body();
                     System.out.println("Lista de Jogadores: \n");
                     for(int i = 0; i < retorno.length; i++){
-                        Call<Carta[]> chamadaListaCartas = api.pegaMao(retorno[i].getId(), retorno[i].getSenha());
                         addPlayerToFragment(retorno[i].getNome(), retorno[i].getId().toString());
-                        System.out.println(api.pegaMao(retorno[i].getId(), retorno[i].getSenha()));
-                        //retorno[i].setCartas();
                     }
                 }
             }
