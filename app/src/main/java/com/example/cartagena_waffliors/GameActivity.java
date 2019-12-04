@@ -19,13 +19,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GameActivity extends AppCompatActivity {
 
     ViewGroup containerJogadores;
+    ViewGroup containerCards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        containerJogadores = (ViewGroup) findViewById(R.id.container_jogadores);
+        containerJogadores = (ViewGroup) findViewById(R.id.container_cards);
+        containerCards = (ViewGroup) findViewById(R.id.container_cards);
 
 
         System.out.println("Criou sala de jogo");
@@ -65,6 +67,29 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        Call<Carta[]> chamadaCartaJogadores = api.pegaCartasJogador(idJogador, senhaJogador);
+        chamadaCartaJogadores.enqueue((new Callback<Carta[]>() {
+            @Override
+            public void onResponse(Call<Carta[]> call, Response<Carta[]> response) {
+                if(response.code() != 200)
+                {
+                    Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Carta[] retorno = response.body();
+                    System.out.println("Lista de Cartas: \n");
+                    for(int i = 0; i < retorno.length; i++){
+                        addCardToFragment(retorno[i].getTipo(), retorno[i].getQtd());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Carta[]> call, Throwable t) {
+                Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
+            }
+        }));
+
     }
 
     public void addPlayerToFragment(String nomePlayer, String idPlayer){
@@ -78,5 +103,17 @@ public class GameActivity extends AppCompatActivity {
         id.setText("ID : " + idPlayer);
         containerJogadores.addView(cardView);
         System.out.println("Adicionou jogador na lista");
+    }
+
+    public void addCardToFragment(String tipoCarta, int qtdCarta)
+    {
+        CardView cardView2 = (CardView) LayoutInflater.from(this)
+                .inflate(R.layout.cards, containerCards, false);
+
+        //TextView nome = (TextView) cardView2.findViewById(R.id.textView_nomeJogador_CardView);
+        TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
+        //nome.setText("Carta: " + tipoCarta);
+        qtd.setText("Quantidade: " + qtdCarta);
+        containerJogadores.addView(cardView2);
     }
 }
