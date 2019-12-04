@@ -15,4 +15,7 @@ public interface MyService {
 
     @GET("rest/v1/jogo/tabuleiro/{idPartida}")
     public Call<Tile[]> pegaTiles(@Path("idPartida") String idPartida);
+
+    @GET("rest/v1/jogo/status/{idPartida}")
+    public Call<Status>pegaStatusPartida(@Path("idPartida")String idPartida);
 }

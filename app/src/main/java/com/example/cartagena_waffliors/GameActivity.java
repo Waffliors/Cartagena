@@ -1,51 +1,65 @@
 package com.example.cartagena_waffliors;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import retrofit2.Call;
-import retrofit2.Callback;
+import android.os.Bundle;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.Callback;
+
+import android.os.Handler;
+import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.content.SharedPreferences;
+import androidx.cardview.widget.CardView;
+import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+//Classe da atividade in game
 public class GameActivity extends AppCompatActivity {
 
+    private String idJogo;
+
+
+    //Container que armazena os jogadores
     ViewGroup containerJogadores;
+    //Container que armazena os cards
     ViewGroup containerCards;
+    //Atualizador do jogo
+    private Handler refresher = null;
+    private Runnable refresherRunner;
+    private int taxaAtualizacaoEmSegundos = 1;
+    private int contador = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        //Bind Container de jogadores
         containerJogadores = (ViewGroup) findViewById(R.id.container_jogadores);
-        //containerCards = (ViewGroup) findViewById(R.id.container_cards);
 
-
-        System.out.println("Criou sala de jogo");
+        //Coleta informações do jogador para gerenciar o jogo
         SharedPreferences pref = getApplicationContext().getSharedPreferences("jogo", 0);
+        idJogo = pref.getString("idJogo","");
+        String nomeJogo = pref.getString("nomeJogo","");
+        String senhaJogo = pref.getString("senhaJogo","");
         String idJogador = pref.getString("idJogador","");
         String nomeJogador = pref.getString("nomeJogador","");
         String senhaJogador = pref.getString("senhaJogador","");
-        String idJogo = pref.getString("idJogo","");
-        String nomeJogo = pref.getString("nomeJogo","");
-        String senhaJogo = pref.getString("senhaJogo","");
 
+        //Inicializa retrofit usado na chamada
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://kingme.azurewebsites.net/cartagena/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        //Inicializa API do usuário
+        final MyService api = retrofit.create(MyService.class);
 
-        MyService api = retrofit.create(MyService.class);
-
+        //Executa a chamada para coletar as informações dos usuários que estão na partida, enquanto
+        //obtém as informações ele cria cards para cada um deles
         Call<Jogador[]> chamadaListaJogadores = api.pegarListaJogadores(idJogo);
         chamadaListaJogadores.enqueue(new Callback<Jogador[]>() {
             @Override
@@ -67,6 +81,35 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        //Inicializa gameloop
+        refresher = new Handler();
+        refresherRunner = new Runnable() {
+            @Override
+            public void run() {
+                final Runnable rThis = this;
+                checaStatusJogo(idJogo, api);
+                contador+=1;
+
+                //agenda a chamada da proxima atualização
+                refresher.postDelayed(rThis,taxaAtualizacaoEmSegundos * 1000);
+            }
+        };
+        //inicializa o atualizador
+        startRefresher(0);
+
+
+
+
+
+
+
+
+
+
+
+
+         //Executa a chamada para coletar as informações dos cards do jogador, enquanto obtém as
+         //informações ele cria cards para cada um deles
         Call<Carta[]> chamadaCartaJogadores = api.pegaCartasJogador(idJogador, senhaJogador);
         chamadaCartaJogadores.enqueue((new Callback<Carta[]>() {
             @Override
@@ -79,18 +122,71 @@ public class GameActivity extends AppCompatActivity {
                     Carta[] retorno = response.body();
                     System.out.println("Lista de Cartas: \n");
                     for(int i = 0; i < retorno.length; i++){
-                        addCardToFragment(retorno[i].getTipo(), retorno[i].getQtd());
+                        //addCardToFragment(retorno[i].getTipo(), retorno[i].getQtd());
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<Carta[]> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
             }
         }));
-
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void checaStatusJogo(String idPartida, MyService api){
+        Call<Status> chamadaStatusJogo = api.pegaStatusPartida(idPartida);
+        chamadaStatusJogo.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                if(response.code() != 200)
+                {
+                    Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Status retorno = response.body();
+                    System.out.println("Jogador da vez: " + retorno.getIdJogadorDaVez()+"\n");
+                    System.out.println("Número da jogada: " + retorno.getNumeroDaJogada());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
+                Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
+
+
 
     public void addPlayerToFragment(String nomePlayer, String idPlayer){
         CardView cardView = (CardView) LayoutInflater.from(this)
@@ -115,5 +211,17 @@ public class GameActivity extends AppCompatActivity {
         //nome.setText("Carta: " + tipoCarta);
         qtd.setText("Quantidade: " + qtdCarta);
         containerJogadores.addView(cardView2);
+    }
+
+    //inicializa o atualizador
+    public void startRefresher(long delay) {
+        if (refresher != null)
+            refresher.postDelayed(refresherRunner, delay);
+    }
+
+    //desliga o atualizador
+    public void stopRefresher () {
+        if (refresher != null)
+            refresher.removeCallbacks(refresherRunner);
     }
 }
