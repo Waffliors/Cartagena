@@ -4,11 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -110,9 +115,36 @@ public class GameActivity extends AppCompatActivity {
         CardView cardView2 = (CardView) LayoutInflater.from(this)
                 .inflate(R.layout.cards, containerCards, false);
 
-        //TextView nome = (TextView) cardView2.findViewById(R.id.textView_nomeJogador_CardView);
+        ImageView image = (ImageView) cardView2.findViewById(R.id.cardImage);
+        String url = "";
+
+        switch (tipoCarta)
+        {
+            case "1":
+                url = "https://imgur.com/2MANop4.png";
+                break;
+            case "2":
+                url = "https://imgur.com/6uWJgky.png";
+                break;
+            case "3":
+                url = "https://imgur.com/YrktWor.png";
+                break;
+            case "4":
+                url = "https://imgur.com/wHf1OJ4.png";
+                break;
+            case "5":
+                url = "https://imgur.com/SbVxLwB.png";
+                break;
+            case "6":
+                url = "https://imgur.com/c6K5e8d.png";
+                break;
+        }
+
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoader.displayImage(url, image);
+
         TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
-        //nome.setText("Carta: " + tipoCarta);
         qtd.setText("Quantidade: " + qtdCarta);
         containerJogadores.addView(cardView2);
     }
