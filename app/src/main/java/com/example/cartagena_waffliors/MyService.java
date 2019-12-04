@@ -12,4 +12,7 @@ public interface MyService {
     
     @GET("rest/v1/jogador/mao/{idJogador}/{senhaJogador}")
     public Call<Carta[]> pegaCartasJogador(@Path("idJogador") String idPartida, @Path("senhaJogador") String senhaJogador);
+
+    @GET("rest/v1/jogo/status/{idPartida}")
+    public Call<Status>pegaStatusPartida(@Path("idPartida")String idPartida);
 }
