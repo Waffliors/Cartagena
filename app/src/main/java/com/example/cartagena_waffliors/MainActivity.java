@@ -1,22 +1,20 @@
 package com.example.cartagena_waffliors;
 
+import java.util.Random;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Random;
-
 import br.com.senac.pdm.mepresidenta.lobby.CriarJogoActivity;
 import br.com.senac.pdm.mepresidenta.lobby.EscolherJogoActivity;
 
+//Classe MainActivity responsável por criar a partida do jogador e introduzi-lo em outras partidas
 public class MainActivity extends AppCompatActivity {
 
-    Button createMatchButton;
-    Button findMatchButton;
-    Intent intentFromPreMain;
     String userName;
+    Intent intentFromPreMain;
+    Button findMatchButton, createMatchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         userName = intentFromPreMain.getStringExtra("userName");
         createMatchButton = findViewById(R.id.criar);
         findMatchButton = findViewById(R.id.entrar);
-
         createMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         findMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
