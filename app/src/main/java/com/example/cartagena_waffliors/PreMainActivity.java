@@ -1,23 +1,19 @@
 package com.example.cartagena_waffliors;
 
-import android.content.Intent;
 import android.view.View;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.widget.Button;
+import android.content.Intent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import br.com.senac.pdm.mepresidenta.lobby.CriarJogoActivity;
+import android.widget.EditText;
+import androidx.appcompat.app.AppCompatActivity;
 
 //Classe que coleta e filtra o nome do usuário para utilizar na aplicação
 public class PreMainActivity extends AppCompatActivity {
-    Button   startGameButton;
-    EditText userName;
+    private Button   startGameButton;
+    private EditText userName;
 
     //Na criação da activity
     @Override
