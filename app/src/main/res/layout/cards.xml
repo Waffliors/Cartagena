@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -13,24 +13,23 @@
 
         <TextView
             android:id="@+id/cardQtd"
-            android:layout_width="190dp"
+            android:layout_width="149dp"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/cardID"
-            android:layout_width="match_parent"
+            android:layout_width="156dp"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textSize="30dp"
-            android:visibility="invisible"/>
+            android:textSize="15dp"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/cardImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/avatars[3]" />
+            android:layout_width="75dp"
+            android:layout_height="75dp" />
 
     </LinearLayout>
 

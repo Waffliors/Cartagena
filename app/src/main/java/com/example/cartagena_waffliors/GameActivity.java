@@ -16,41 +16,62 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.Callback;
+
+import android.os.Handler;
+
+import org.w3c.dom.Text;
+
 import retrofit2.converter.gson.GsonConverterFactory;
 
+//Classe da atividade in game
 public class GameActivity extends AppCompatActivity {
 
+    private String idJogo;
+
+
+    //Container que armazena os jogadores
     ViewGroup containerJogadores;
+    //Container que armazena os cards
     ViewGroup containerCards;
+    //Atualizador do jogo
+    private Handler refresher = null;
+    private Runnable refresherRunner;
+    private int taxaAtualizacaoEmSegundos = 1;
+    private int contador = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_game);
 
+        //Bind Container de jogadores
         containerJogadores = (ViewGroup) findViewById(R.id.container_jogadores);
-        //containerCards = (ViewGroup) findViewById(R.id.container_cards);
+        containerCards = (ViewGroup) findViewById(R.id.container_cards);
 
-
-        System.out.println("Criou sala de jogo");
+        //Coleta informações do jogador para gerenciar o jogo
         SharedPreferences pref = getApplicationContext().getSharedPreferences("jogo", 0);
+        idJogo = pref.getString("idJogo","");
+        String nomeJogo = pref.getString("nomeJogo","");
+        String senhaJogo = pref.getString("senhaJogo","");
         String idJogador = pref.getString("idJogador","");
         String nomeJogador = pref.getString("nomeJogador","");
         String senhaJogador = pref.getString("senhaJogador","");
-        String idJogo = pref.getString("idJogo","");
-        String nomeJogo = pref.getString("nomeJogo","");
-        String senhaJogo = pref.getString("senhaJogo","");
 
+        //Inicializa retrofit usado na chamada
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://kingme.azurewebsites.net/cartagena/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        //Inicializa API do usuário
+        final MyService api = retrofit.create(MyService.class);
 
-        MyService api = retrofit.create(MyService.class);
-
+        //Executa a chamada para coletar as informações dos usuários que estão na partida, enquanto
+        //obtém as informações ele cria cards para cada um deles
         Call<Jogador[]> chamadaListaJogadores = api.pegarListaJogadores(idJogo);
         chamadaListaJogadores.enqueue(new Callback<Jogador[]>() {
             @Override
@@ -72,6 +93,35 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        //Inicializa gameloop
+        refresher = new Handler();
+        refresherRunner = new Runnable() {
+            @Override
+            public void run() {
+                final Runnable rThis = this;
+                checaStatusJogo(idJogo, api);
+                contador+=1;
+
+                //agenda a chamada da proxima atualização
+                refresher.postDelayed(rThis,taxaAtualizacaoEmSegundos * 1000);
+            }
+        };
+        //inicializa o atualizador
+        startRefresher(0);
+
+
+
+
+
+
+
+
+
+
+
+
+         //Executa a chamada para coletar as informações dos cards do jogador, enquanto obtém as
+         //informações ele cria cards para cada um deles
         Call<Carta[]> chamadaCartaJogadores = api.pegaCartasJogador(idJogador, senhaJogador);
         chamadaCartaJogadores.enqueue((new Callback<Carta[]>() {
             @Override
@@ -88,13 +138,34 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<Carta[]> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
             }
         }));
+    }
 
+    public void checaStatusJogo(String idPartida, MyService api){
+        Call<Status> chamadaStatusJogo = api.pegaStatusPartida(idPartida);
+        chamadaStatusJogo.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                if(response.code() != 200)
+                {
+                    Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Status retorno = response.body();
+                    System.out.println("Jogador da vez: " + retorno.getIdJogadorDaVez()+"\n");
+                    System.out.println("Número da jogada: " + retorno.getNumeroDaJogada());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
+                Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void addPlayerToFragment(String nomePlayer, String idPlayer){
@@ -120,22 +191,22 @@ public class GameActivity extends AppCompatActivity {
 
         switch (tipoCarta)
         {
-            case "1":
+            case "T":
                 url = "https://imgur.com/2MANop4.png";
                 break;
-            case "2":
+            case "C":
                 url = "https://imgur.com/6uWJgky.png";
                 break;
-            case "3":
+            case "F":
                 url = "https://imgur.com/YrktWor.png";
                 break;
-            case "4":
+            case "G":
                 url = "https://imgur.com/wHf1OJ4.png";
                 break;
-            case "5":
+            case "E":
                 url = "https://imgur.com/SbVxLwB.png";
                 break;
-            case "6":
+            case "P":
                 url = "https://imgur.com/c6K5e8d.png";
                 break;
         }
@@ -146,6 +217,20 @@ public class GameActivity extends AppCompatActivity {
 
         TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
         qtd.setText("Quantidade: " + qtdCarta);
-        containerJogadores.addView(cardView2);
+        TextView tipo = (TextView) cardView2.findViewById(R.id.cardID);
+        tipo.setText("Tipo: " + tipoCarta);
+        containerCards.addView(cardView2);
+    }
+
+    //inicializa o atualizador
+    public void startRefresher(long delay) {
+        if (refresher != null)
+            refresher.postDelayed(refresherRunner, delay);
+    }
+
+    //desliga o atualizador
+    public void stopRefresher () {
+        if (refresher != null)
+            refresher.removeCallbacks(refresherRunner);
     }
 }
