@@ -7,11 +7,16 @@ import retrofit2.Retrofit;
 import retrofit2.Callback;
 
 import android.os.Handler;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.content.SharedPreferences;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import androidx.cardview.widget.CardView;
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,6 +25,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GameActivity extends AppCompatActivity {
 
     private String idJogo;
+
+    private ViewGroup tiles;
 
 
     //Container que armazena os jogadores
@@ -50,6 +57,7 @@ public class GameActivity extends AppCompatActivity {
         String idJogador = pref.getString("idJogador","");
         String nomeJogador = pref.getString("nomeJogador","");
         String senhaJogador = pref.getString("senhaJogador","");
+        tiles = (ViewGroup) findViewById(R.id.scroll_tiles);
 
         //Inicializa retrofit usado na chamada
         Retrofit retrofit = new Retrofit.Builder()
@@ -78,6 +86,29 @@ public class GameActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<Jogador[]> call, Throwable t) {
+                Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Call<Tile[]> chamadaListaTiles = api.pegarTiles(idJogo);
+        chamadaListaTiles.enqueue(new Callback<Tile[]>() {
+            @Override
+            public void onResponse(Call<Tile[]> call, Response<Tile[]> response) {
+                if(response.code() != 200){
+
+                    Toast.makeText(GameActivity.this, "Bazinga " + response.code(),
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Tile[] retorno = response.body();
+                    System.out.println("Lista de tiles: \n");
+                    for(int i = 0; i < retorno.length; i++){
+                        addTile(retorno[i].getTipo(), retorno[i].getQntd());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tile[]> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
             }
         });
@@ -200,6 +231,41 @@ public class GameActivity extends AppCompatActivity {
         id.setText("ID : " + idPlayer);
         containerJogadores.addView(cardView);
         System.out.println("Adicionou jogador na lista");
+    }
+
+    // Add tiles
+    public void addTile(String tipo, int qntd) {
+        CardView cardView = (CardView) LayoutInflater.from(this)
+                .inflate(R.layout.fragment_tile, tiles, false);
+
+        ImageView imagem = (ImageView) cardView.findViewById(R.id.image_tile);
+        String url = "";
+        switch (tipo) {
+            case "X":
+                // Prisao
+                url = "drawable/garrafa.png";
+            case "C":
+                url = "drawable/chave.png";
+            case "F":
+                url = "drawable/faca.png";
+            case "E":
+                url = "drawable/esqueleto.png";
+            case"P":
+                url = "drawable/pistola.png";
+            case "T":
+                url = "drawable/tricornio.png";
+            case "G":
+                url = "drawable/garrafa.png";
+            case "B":
+                // Barco
+                url = "drawable/garrafa.png";
+        }
+
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoader.displayImage(url, imagem);
+
+        tiles.addView(cardView);
     }
 
     public void addCardToFragment(String tipoCarta, int qtdCarta)

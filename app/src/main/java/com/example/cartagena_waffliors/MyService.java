@@ -14,7 +14,7 @@ public interface MyService {
     public Call<Carta[]> pegaCartasJogador(@Path("idJogador") String idPartida, @Path("senhaJogador") String senhaJogador);
 
     @GET("rest/v1/jogo/tabuleiro/{idPartida}")
-    public Call<Tile[]> pegaTiles(@Path("idPartida") String idPartida);
+    public Call<Tile[]> pegarTiles(@Path("idPartida") String idPartida);
 
     @GET("rest/v1/jogo/status/{idPartida}")
     public Call<Status>pegaStatusPartida(@Path("idPartida")String idPartida);
