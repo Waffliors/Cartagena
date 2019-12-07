@@ -30,7 +30,7 @@ public class GameActivity extends AppCompatActivity {
                    nomeJogador,
                    senhaJogador;
 
-    private ViewGroup tiles;
+    private ViewGroup container_tiles;
     //Container que armazena os jogadores
     ViewGroup containerJogadores;
     //Container que armazena os cards
@@ -57,7 +57,7 @@ public class GameActivity extends AppCompatActivity {
         idJogador = pref.getString("idJogador","");
         nomeJogador = pref.getString("nomeJogador","");
         senhaJogador = pref.getString("senhaJogador","");
-        tiles = (ViewGroup) findViewById(R.id.scroll_tiles);
+        container_tiles = (ViewGroup) findViewById(R.id.container_tiles);
         //Inicializa retrofit usado na chamada
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://kingme.azurewebsites.net/cartagena/")
@@ -71,7 +71,6 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Tile[]> call, Response<Tile[]> response) {
                 if(response.code() != 200){
-
                     Toast.makeText(GameActivity.this, "Bazinga " + response.code(),
                             Toast.LENGTH_LONG).show();
                 }else{
@@ -180,7 +179,7 @@ public class GameActivity extends AppCompatActivity {
     // Add tiles
     public void addTile(String tipo, int qntd) {
         CardView cardView = (CardView) LayoutInflater.from(this)
-                .inflate(R.layout.fragment_tile, tiles, false);
+                .inflate(R.layout.fragment_tile, container_tiles, false);
 
         ImageView imagem = (ImageView) cardView.findViewById(R.id.image_tile);
         String url = "";
@@ -208,8 +207,8 @@ public class GameActivity extends AppCompatActivity {
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         imageLoader.displayImage(url, imagem);
-
-        tiles.addView(cardView);
+        imageLoader.destroy();
+        container_tiles.addView(cardView);
     }
 
     public void addCardToFragment(String tipoCarta, int qtdCarta)
