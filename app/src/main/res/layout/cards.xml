@@ -11,6 +11,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/cardImage"
+            android:layout_width="75dp"
+            android:layout_height="75dp" />
+
         <TextView
             android:id="@+id/cardQtd"
             android:layout_width="149dp"
@@ -25,11 +30,6 @@
             android:text="TextView"
             android:textSize="15dp"
             android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/cardImage"
-            android:layout_width="75dp"
-            android:layout_height="75dp" />
 
     </LinearLayout>
 

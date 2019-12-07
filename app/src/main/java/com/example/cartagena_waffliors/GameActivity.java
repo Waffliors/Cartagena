@@ -242,10 +242,39 @@ public class GameActivity extends AppCompatActivity {
         CardView cardView2 = (CardView) LayoutInflater.from(this)
                 .inflate(R.layout.cards, containerCards, false);
 
-        //TextView nome = (TextView) cardView2.findViewById(R.id.textView_nomeJogador_CardView);
+        ImageView image = (ImageView) cardView2.findViewById(R.id.cardImage);
+        String url = "";
+
+        switch (tipoCarta)
+        {
+            case "T":
+                url = "https://imgur.com/2MANop4.png";
+                break;
+            case "C":
+                url = "https://imgur.com/6uWJgky.png";
+                break;
+            case "F":
+                url = "https://imgur.com/YrktWor.png";
+                break;
+            case "G":
+                url = "https://imgur.com/wHf1OJ4.png";
+                break;
+            case "E":
+                url = "https://imgur.com/SbVxLwB.png";
+                break;
+            case "P":
+                url = "https://imgur.com/c6K5e8d.png";
+                break;
+        }
+
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoader.displayImage(url, image);
+
         TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
-        //nome.setText("Carta: " + tipoCarta);
         qtd.setText("Quantidade: " + qtdCarta);
+        TextView tipo = (TextView) cardView2.findViewById(R.id.cardID);
+        tipo.setText("Tipo: " + tipoCarta);
         containerCards.addView(cardView2);
     }
 
