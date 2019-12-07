@@ -63,11 +63,4 @@ public class Jogo {
 	public void setData(String data) {
 		this.data = data;
 	}
-
-
-
-	
-	
-	
-
 }
