@@ -142,17 +142,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
     }
-    private void addPlayerToFragment(String nomePlayer, String idPlayer){
-        CardView cardView = (CardView) LayoutInflater.from(this)
-                .inflate(R.layout.players_card, containerJogadores, false);
-        System.out.println("Adicionando jogador " + nomePlayer + " ao container de jogadores");
-        TextView nome = (TextView) cardView.findViewById(R.id.textView_nomeJogador_CardView);
-        TextView id = (TextView) cardView.findViewById(R.id.textViewIDJogador_CardView);
-        nome.setText("Jogador: " + nomePlayer);
-        id.setText("ID : " + idPlayer);
-        containerJogadores.addView(cardView);
-        System.out.println("Adicionou jogador na lista");
-    }
     private void checaStatusJogo(MyService api){
         Call<Status> chamadaStatusJogo = api.pegaStatusPartida(idJogo);
         chamadaStatusJogo.enqueue(new Callback<Status>() {
