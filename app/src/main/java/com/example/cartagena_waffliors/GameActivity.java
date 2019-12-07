@@ -49,6 +49,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Bind Container de jogadores
         containerJogadores = (ViewGroup) findViewById(R.id.container_jogadores);
+        containerCards = (ViewGroup) findViewById(R.id.container_cards);
         //Coleta informações do jogador para gerenciar o jogo
         SharedPreferences pref = getApplicationContext().getSharedPreferences("jogo", 0);
         idJogo = pref.getString("idJogo","");
@@ -104,6 +105,30 @@ public class GameActivity extends AppCompatActivity {
         };
         //inicializa o atualizador
         startRefresher(0);
+
+        //Executa a chamada para coletar as informações dos cards do jogador, enquanto obtém as
+        //informações ele cria cards para cada um deles
+        Call<Carta[]> chamadaCartaJogadores = api.pegaCartasJogador(idJogador, senhaJogador);
+        chamadaCartaJogadores.enqueue((new Callback<Carta[]>() {
+            @Override
+            public void onResponse(Call<Carta[]> call, Response<Carta[]> response) {
+                if(response.code() != 200)
+                {
+                    Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Carta[] retorno = response.body();
+                    System.out.println("Lista de Cartas: \n");
+                    for(int i = 0; i < retorno.length; i++){
+                        addCardToFragment(retorno[i].getTipo(), retorno[i].getQtd());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<Carta[]> call, Throwable t) {
+                Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
+            }
+        }));
     }
 
     //Executa as chamadas do webservice
@@ -174,6 +199,7 @@ public class GameActivity extends AppCompatActivity {
         nome.setText("Jogador: " + nomePlayer);
         id.setText("ID : " + idPlayer);
         containerJogadores.addView(cardView);
+
         System.out.println("Adicionou jogador na lista");
     }
 
@@ -221,7 +247,7 @@ public class GameActivity extends AppCompatActivity {
         TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
         //nome.setText("Carta: " + tipoCarta);
         qtd.setText("Quantidade: " + qtdCarta);
-        containerJogadores.addView(cardView2);
+        containerCards.addView(cardView2);
     }
 
     //inicializa o atualizador
