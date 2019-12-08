@@ -6,10 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".GameActivity">
 
-    <ScrollView
-        android:id="@+id/scroll_tiles"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <HorizontalScrollView
+        android:id="@+id/tileScrollView"
+        android:layout_width="696dp"
+        android:layout_height="359dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,10 +21,10 @@
 
         <LinearLayout
             android:id="@+id/container_tiles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+    </HorizontalScrollView>
 
     <ImageView
         android:id="@+id/imageView3"

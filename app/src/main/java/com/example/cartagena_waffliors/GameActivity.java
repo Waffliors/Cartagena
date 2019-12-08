@@ -1,6 +1,8 @@
 package com.example.cartagena_waffliors;
 
 import retrofit2.Call;
+
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -18,6 +20,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import androidx.cardview.widget.CardView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import retrofit2.converter.gson.GsonConverterFactory;
 
 //Classe da atividade in game
@@ -29,6 +33,8 @@ public class GameActivity extends AppCompatActivity {
                    senhaJogo,
                    nomeJogador,
                    senhaJogador;
+
+    private ImageLoader imageLoaderTile;
 
     private ViewGroup container_tiles;
     //Container que armazena os jogadores
@@ -207,33 +213,44 @@ public class GameActivity extends AppCompatActivity {
         CardView cardView = (CardView) LayoutInflater.from(this)
                 .inflate(R.layout.fragment_tile, container_tiles, false);
 
-        ImageView imagem = (ImageView) cardView.findViewById(R.id.image_tile);
+        ImageView imagemView = (ImageView) cardView.findViewById(R.id.image_tile);
         String url = "";
         switch (tipo) {
             case "X":
                 // Prisao
-                url = "drawable/garrafa.png";
+                url = "https://i.imgur.com/9dun6Xz.png";
+                break;
             case "C":
-                url = "drawable/chave.png";
+                url = "https://i.imgur.com/H75We3n.png";
+                break;
             case "F":
-                url = "drawable/faca.png";
+                url = "https://i.imgur.com/JpHrcpH.png";
+                break;
             case "E":
-                url = "drawable/esqueleto.png";
+                url = "https://i.imgur.com/Ikfy3Ac.png";
+                break;
             case"P":
-                url = "drawable/pistola.png";
+                url = "https://i.imgur.com/WVC8Poy.png";
+                break;
             case "T":
-                url = "drawable/tricornio.png";
+                url = "https://i.imgur.com/CXs0wkN.png";
+                break;
             case "G":
-                url = "drawable/garrafa.png";
+                url = "https://i.imgur.com/9dun6Xz.png";
+                break;
             case "B":
                 // Barco
-                url = "drawable/garrafa.png";
+                url = "https://i.imgur.com/9dun6Xz.png";
+                break;
         }
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        imageLoader.displayImage(url, imagem);
-        imageLoader.destroy();
+        System.out.println("Desenha tile");
+        System.out.println(url);
+
+        imageLoaderTile = ImageLoader.getInstance();
+        imageLoaderTile.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoaderTile.displayImage(url, imagemView);
+
         container_tiles.addView(cardView);
     }
 
@@ -267,9 +284,9 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
+        /*ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        imageLoader.displayImage(url, image);
+        imageLoader.displayImage(url, image);*/
 
         TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
         qtd.setText("Quantidade: " + qtdCarta);
