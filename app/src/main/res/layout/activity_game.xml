@@ -6,34 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".GameActivity">
 
-    <ScrollView
-        android:id="@+id/scroll_tiles"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <HorizontalScrollView
+        android:id="@+id/tileScrollView"
+        android:layout_width="696dp"
+        android:layout_height="359dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginBottom="316dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/espada" />
+            android:id="@+id/container_tiles"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+    </HorizontalScrollView>
 
     <ScrollView
         android:id="@+id/scrollView2"
