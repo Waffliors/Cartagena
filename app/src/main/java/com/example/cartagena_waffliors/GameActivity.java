@@ -34,7 +34,7 @@ public class GameActivity extends AppCompatActivity {
                    nomeJogador,
                    senhaJogador;
 
-    private ImageLoader imageLoaderTile;
+    private ImageLoader imageLoaderTile, imageLoaderCards;
 
     private ViewGroup container_tiles;
     //Container que armazena os jogadores
@@ -284,9 +284,9 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
 
-        /*ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
-        imageLoader.displayImage(url, image);*/
+        imageLoaderCards = ImageLoader.getInstance();
+        imageLoaderCards.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoaderCards.displayImage(url, image);
 
         TextView qtd = (TextView) cardView2.findViewById(R.id.cardQtd);
         qtd.setText("Quantidade: " + qtdCarta);
