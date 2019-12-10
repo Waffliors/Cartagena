@@ -9,7 +9,7 @@ public interface MyService {
 
     @GET("rest/v1/jogador/{idPartida}")
     public Call<Jogador[]> pegarListaJogadores(@Path("idPartida") String idPartida);
-    
+
     @GET("rest/v1/jogador/mao/{idJogador}/{senhaJogador}")
     public Call<Carta[]> pegaCartasJogador(@Path("idJogador") String idPartida, @Path("senhaJogador") String senhaJogador);
 
@@ -17,5 +17,5 @@ public interface MyService {
     public Call<Tile[]> pegarTiles(@Path("idPartida") String idPartida);
 
     @GET("rest/v1/jogo/status/{idPartida}")
-    public Call<Status>pegaStatusPartida(@Path("idPartida")String idPartida);
+    public Call<Status> pegaStatusPartida(@Path("idPartida") String idPartida);
 }

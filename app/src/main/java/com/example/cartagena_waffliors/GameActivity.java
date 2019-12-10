@@ -4,9 +4,11 @@ import retrofit2.Call;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.Callback;
+
 import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,11 +30,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GameActivity extends AppCompatActivity {
     //Propriedades obtidas do jogador
     private String idJogo,
-                   idJogador,
-                   nomeJogo,
-                   senhaJogo,
-                   nomeJogador,
-                   senhaJogador;
+            idJogador,
+            nomeJogo,
+            senhaJogo,
+            nomeJogador,
+            senhaJogador;
 
     private ImageLoader imageLoaderTile, imageLoaderCards;
 
@@ -58,12 +60,12 @@ public class GameActivity extends AppCompatActivity {
         containerCards = (ViewGroup) findViewById(R.id.container_cards);
         //Coleta informações do jogador para gerenciar o jogo
         SharedPreferences pref = getApplicationContext().getSharedPreferences("jogo", 0);
-        idJogo = pref.getString("idJogo","");
-        nomeJogo = pref.getString("nomeJogo","");
-        senhaJogo = pref.getString("senhaJogo","");
-        idJogador = pref.getString("idJogador","");
-        nomeJogador = pref.getString("nomeJogador","");
-        senhaJogador = pref.getString("senhaJogador","");
+        idJogo = pref.getString("idJogo", "");
+        nomeJogo = pref.getString("nomeJogo", "");
+        senhaJogo = pref.getString("senhaJogo", "");
+        idJogador = pref.getString("idJogador", "");
+        nomeJogador = pref.getString("nomeJogador", "");
+        senhaJogador = pref.getString("senhaJogador", "");
         container_tiles = (ViewGroup) findViewById(R.id.container_tiles);
         //Inicializa retrofit usado na chamada
         Retrofit retrofit = new Retrofit.Builder()
@@ -77,13 +79,13 @@ public class GameActivity extends AppCompatActivity {
         chamadaListaTiles.enqueue(new Callback<Tile[]>() {
             @Override
             public void onResponse(Call<Tile[]> call, Response<Tile[]> response) {
-                if(response.code() != 200){
+                if (response.code() != 200) {
                     Toast.makeText(GameActivity.this, "Bazinga " + response.code(),
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     Tile[] retorno = response.body();
                     System.out.println("Lista de tiles: \n");
-                    for(int i = 0; i < retorno.length; i++){
+                    for (int i = 0; i < retorno.length; i++) {
                         addTile(retorno[i].getTipo(), retorno[i].getQntd());
                     }
                 }
@@ -103,9 +105,9 @@ public class GameActivity extends AppCompatActivity {
             public void run() {
                 final Runnable rThis = this;
                 gameLogics(api);
-                contador+=1;
+                contador += 1;
                 //Agenda a chamada da proxima atualização
-                refresher.postDelayed(rThis,taxaAtualizacaoEmSegundos * 1000);
+                refresher.postDelayed(rThis, taxaAtualizacaoEmSegundos * 1000);
             }
         };
         //inicializa o atualizador
@@ -117,18 +119,18 @@ public class GameActivity extends AppCompatActivity {
         chamadaCartaJogadores.enqueue((new Callback<Carta[]>() {
             @Override
             public void onResponse(Call<Carta[]> call, Response<Carta[]> response) {
-                if(response.code() != 200)
-                {
+                if (response.code() != 200) {
                     Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     Carta[] retorno = response.body();
                     System.out.println("Lista de Cartas: \n");
-                    for(int i = 0; i < retorno.length; i++){
+                    for (int i = 0; i < retorno.length; i++) {
                         addCardToFragment(retorno[i].getTipo(), retorno[i].getQtd());
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<Carta[]> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
@@ -137,7 +139,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //Executa as chamadas do webservice
-    private void gameLogics(MyService api){
+    private void gameLogics(MyService api) {
         //Atualiza Cards do jogador
         //Adiciona Cards do jogador no fragmento de cards
 
@@ -148,40 +150,41 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    private void atualizaListaJogadores(MyService api){
+    private void atualizaListaJogadores(MyService api) {
         //Executa a chamada para coletar as informações dos usuários que estão na partida, enquanto
         //obtém as informações ele cria cards para cada um deles
         Call<Jogador[]> chamadaListaJogadores = api.pegarListaJogadores(idJogo);
         chamadaListaJogadores.enqueue(new Callback<Jogador[]>() {
             @Override
             public void onResponse(Call<Jogador[]> call, Response<Jogador[]> response) {
-                if(response.code() != 200){
+                if (response.code() != 200) {
                     Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     Jogador[] retorno = response.body();
                     System.out.println("Lista de Jogadores: \n");
-                    for(int i = 0; i < retorno.length; i++){
+                    for (int i = 0; i < retorno.length; i++) {
                         addPlayerToFragment(retorno[i].getNome(), retorno[i].getId().toString());
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<Jogador[]> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Deu Merda", Toast.LENGTH_LONG).show();
             }
         });
     }
-    private void checaStatusJogo(MyService api){
+
+    private void checaStatusJogo(MyService api) {
         Call<Status> chamadaStatusJogo = api.pegaStatusPartida(idJogo);
         chamadaStatusJogo.enqueue(new Callback<Status>() {
             @Override
             public void onResponse(Call<Status> call, Response<Status> response) {
-                if(response.code() != 200)
-                {
+                if (response.code() != 200) {
                     Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     Status retorno = response.body();
                     System.out.println("Vez do jogador: " + retorno.getIdJogadorDaVez());
                 }
@@ -194,7 +197,7 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    public void addPlayerToFragment(String nomePlayer, String idPlayer){
+    public void addPlayerToFragment(String nomePlayer, String idPlayer) {
         CardView cardView = (CardView) LayoutInflater.from(this)
                 .inflate(R.layout.players_card, containerJogadores, false);
 
@@ -229,7 +232,7 @@ public class GameActivity extends AppCompatActivity {
             case "E":
                 url = "https://i.imgur.com/Ikfy3Ac.png";
                 break;
-            case"P":
+            case "P":
                 url = "https://i.imgur.com/WVC8Poy.png";
                 break;
             case "T":
@@ -254,16 +257,14 @@ public class GameActivity extends AppCompatActivity {
         container_tiles.addView(cardView);
     }
 
-    public void addCardToFragment(String tipoCarta, int qtdCarta)
-    {
+    public void addCardToFragment(String tipoCarta, int qtdCarta) {
         CardView cardView2 = (CardView) LayoutInflater.from(this)
                 .inflate(R.layout.cards, containerCards, false);
 
         ImageView image = (ImageView) cardView2.findViewById(R.id.cardImage);
         String url = "";
 
-        switch (tipoCarta)
-        {
+        switch (tipoCarta) {
             case "T":
                 url = "https://imgur.com/2MANop4.png";
                 break;
@@ -302,7 +303,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //desliga o atualizador
-    public void stopRefresher () {
+    public void stopRefresher() {
         if (refresher != null)
             refresher.removeCallbacks(refresherRunner);
     }

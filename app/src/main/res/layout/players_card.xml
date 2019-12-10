@@ -36,6 +36,14 @@
             android:textSize="15dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
+        <TextView
+            android:id="@+id/textViewCorJogador_CardView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cor:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="15dp" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
