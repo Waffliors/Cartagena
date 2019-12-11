@@ -36,7 +36,7 @@ public class GameActivity extends AppCompatActivity {
             nomeJogador,
             senhaJogador;
 
-    private ImageLoader imageLoaderTile, imageLoaderCards;
+    private ImageLoader imageLoaderTile, imageLoaderCards, imageLoaderPlayer;
 
     private ViewGroup container_tiles;
     //Container que armazena os jogadores
@@ -98,6 +98,8 @@ public class GameActivity extends AppCompatActivity {
         });
 
         atualizaListaJogadores(api);
+
+
         //Inicializa gameloop
         refresher = new Handler();
         refresherRunner = new Runnable() {
@@ -157,6 +159,10 @@ public class GameActivity extends AppCompatActivity {
         chamadaListaJogadores.enqueue(new Callback<Jogador[]>() {
             @Override
             public void onResponse(Call<Jogador[]> call, Response<Jogador[]> response) {
+
+                System.out.println("tamanho  do response: " + response.body().length);
+
+
                 if (response.code() != 200) {
                     Toast.makeText(GameActivity.this, "Deu Merda " + response.code(),
                             Toast.LENGTH_LONG).show();
@@ -164,7 +170,33 @@ public class GameActivity extends AppCompatActivity {
                     Jogador[] retorno = response.body();
                     System.out.println("Lista de Jogadores: \n");
                     for (int i = 0; i < retorno.length; i++) {
-                        addPlayerToFragment(retorno[i].getNome(), retorno[i].getId().toString());
+
+
+                        System.out.println("i: " + i);
+
+                        if (i == 0) {
+                            retorno[i].setCor("Vermelho");
+                            System.out.println("caso 0");
+                        }
+                        if (i == 1) {
+                            retorno[i].setCor("Azul");
+                            System.out.println("caso 1");
+
+                        }
+                        if (i == 2) {
+
+                            retorno[i].setCor("Verde");
+                            System.out.println("caso 2");
+                        }
+                        if (i == 3) {
+                            retorno[i].setCor("Amarelo");
+                            System.out.println("caso 3");
+                        }
+
+
+                        System.out.println("nome: " + retorno[i].getNome() + " cor: " + retorno[i].getCor());
+
+                        addPlayerToFragment(retorno[i].getNome(), retorno[i].getId().toString(), retorno[i].getCor());
                     }
                 }
             }
@@ -197,15 +229,43 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    public void addPlayerToFragment(String nomePlayer, String idPlayer) {
+    public void addPlayerToFragment(String nomePlayer, String idPlayer, String corPlayer) {
         CardView cardView = (CardView) LayoutInflater.from(this)
                 .inflate(R.layout.players_card, containerJogadores, false);
+
 
         System.out.println("Adicionando jogador " + nomePlayer + " ao container de jogadores");
         TextView nome = (TextView) cardView.findViewById(R.id.textView_nomeJogador_CardView);
         TextView id = (TextView) cardView.findViewById(R.id.textViewIDJogador_CardView);
+        TextView cor = (TextView) cardView.findViewById(R.id.textViewCorJogador_CardView);
         nome.setText("Jogador: " + nomePlayer);
         id.setText("ID : " + idPlayer);
+        cor.setText(" Cor: " + corPlayer);
+
+        ImageView pirateView = (ImageView) cardView.findViewById(R.id.image_pirate);
+        String link = "";
+
+        switch (corPlayer) {
+            case "Vermelho":
+                // Prisao
+                link = "https://imgur.com/hkWUnRG.png";
+                break;
+            case "Azul":
+                link = "https://imgur.com/kW4nLqN.png";
+                break;
+            case "Verde":
+                link = "https://imgur.com/CvtK0P9.png";
+                break;
+            case "Amarelo":
+                link = "https://imgur.com/3KYmKpb.png";
+                break;
+        }
+
+        imageLoaderPlayer = ImageLoader.getInstance();
+        imageLoaderPlayer.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoaderPlayer.displayImage(link, pirateView);
+
+
         containerJogadores.addView(cardView);
 
         System.out.println("Adicionou jogador na lista");
